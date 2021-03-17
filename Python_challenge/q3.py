@@ -102,10 +102,12 @@ product_storage_parsed = re.search('\[{.*}\]', product_storage_string_raw,
     flags=re.DOTALL).group().replace('\n', ' ')
 
 #################################################################################
-# Serialisation type checking
+# Test if JSON serialisable
 #################################################################################
 
-product_storage_json = json.loads(product_storage_parsed)
+try:
+    product_storage_json = json.loads(product_storage_parsed)
+except:
+    print("not serialisable")
+    exit()
 assert type(product_storage_json) is list
-product_storage_json = json.dumps(product_storage_json)
-assert type(product_storage_json) is str
