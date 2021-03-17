@@ -102,7 +102,7 @@ product_storage_parsed = re.search('\[{.*}\]', product_storage_string_raw,
     flags=re.DOTALL).group().replace('\n', ' ')
 
 #################################################################################
-# Test + serialisation type checking
+# Serialisation type checking
 #################################################################################
 
 product_storage_json = json.loads(product_storage_parsed)
