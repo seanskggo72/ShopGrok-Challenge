@@ -24,13 +24,22 @@ class AldiSpider(scrapy.Spider):
     ]
     
     def parse(self, response):
-        title, result = response.url.split('/')[-2], dict()
         for box in response.xpath('//a[@title="to product detail"]//div[@class="box m-text-image"]').getall():
             sel = scrapy.Selector(text=box)
-            product_title = sel.xpath('//div[@class="box--description--header"]/text()').get().strip()
+            # Get Product image
             product_image = sel.xpath('//img/@src').get()
+            # Get Product Title
+            product_title = sel.xpath('//div[@class="box--description--header"]/text()').get().strip()
+            # Get Package size
             package_size = sel.xpath('//span[@class="box--amount"]/text()').get()
-            price = sel.xpath('//span[@class="box--value"]/text()').get() + sel.xpath('//span[@class="box--decimal"]/text()').get()
+            # Calculate price
+            front = sel.xpath('//span[@class="box--value"]/text()').get()
+            back = sel.xpath('//span[@class="box--decimal"]/text()').get()
+            if front is None and back is None:
+                price = ''
+            else:
+                price = front + 'c' if back is None else front + back
+            # Get Price Per Unit
             price_per_unit = sel.xpath('//span[@class="box--baseprice"]/text()').get()
             yield {
                 'Product_title': product_title,
@@ -39,18 +48,5 @@ class AldiSpider(scrapy.Spider):
                 'Price': price,
                 'Price per unit': price_per_unit
             }
-
-
-
-        # print(":ASDFASDFASDF")
-        # for header in response.xpath('//ul[@class="tab-nav--list dropdown--list ym-clearfix"]/li').getall():
-        #     print(header)
-# sel = scrapy.Selector(text=header)
-# for sub in sel.xpath('//li').getall():
-#     print(sub)
-
-# yield {
-#     'yeet': header.xpath('li')
-# }
 
 
